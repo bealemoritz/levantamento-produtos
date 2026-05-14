@@ -1,0 +1,117 @@
+
+<h2 class="sr-only">Dashboard de performance de produtos Le Moritz — 02/05 a 12/05/2026</h2>
+
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: var(--font-sans); }
+.wrap { padding: 1rem 0; }
+.period { font-size: 12px; color: var(--color-text-tertiary); margin-bottom: 1rem; }
+.summary { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 1.5rem; }
+.metric { background: var(--color-background-secondary); border-radius: var(--border-radius-md); padding: 14px 16px; }
+.metric-label { font-size: 12px; color: var(--color-text-secondary); margin-bottom: 4px; }
+.metric-value { font-size: 22px; font-weight: 500; color: var(--color-text-primary); }
+.metric-sub { font-size: 11px; color: var(--color-text-tertiary); margin-top: 2px; }
+.section-title { font-size: 13px; font-weight: 500; color: var(--color-text-secondary); margin-bottom: 10px; letter-spacing: 0.04em; text-transform: uppercase; }
+.products { display: flex; flex-direction: column; gap: 8px; margin-bottom: 1.5rem; }
+.product-card { background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); padding: 12px 14px; }
+.product-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin-bottom: 8px; }
+.product-name { font-size: 13px; font-weight: 500; color: var(--color-text-primary); line-height: 1.4; flex: 1; }
+.product-gmv { font-size: 16px; font-weight: 500; color: var(--color-text-primary); white-space: nowrap; }
+.product-units { font-size: 11px; color: var(--color-text-tertiary); text-align: right; }
+.channels { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
+.channel { background: var(--color-background-secondary); border-radius: 6px; padding: 6px 8px; }
+.channel-label { font-size: 10px; color: var(--color-text-tertiary); margin-bottom: 2px; }
+.channel-val { font-size: 12px; font-weight: 500; color: var(--color-text-primary); }
+.channel-pct { font-size: 10px; color: var(--color-text-secondary); }
+.bar-wrap { height: 5px; background: var(--color-background-secondary); border-radius: 3px; margin-top: 4px; overflow: hidden; }
+.bar { height: 100%; border-radius: 3px; }
+.c-video { background: #3266ad; }
+.c-loja { background: #1D9E75; }
+.c-live { background: #D85A30; }
+.c-card { background: #7F77DD; }
+.no-val { color: var(--color-text-tertiary) !important; font-weight: 400 !important; }
+</style>
+
+<div class="wrap">
+  <p class="period">02 mai – 12 mai 2026 · 12 produtos ativos</p>
+
+  <div class="summary">
+    <div class="metric">
+      <div class="metric-label">GMV total</div>
+      <div class="metric-value">R$ 20.584</div>
+      <div class="metric-sub">período</div>
+    </div>
+    <div class="metric">
+      <div class="metric-label">Unidades vendidas</div>
+      <div class="metric-value">160</div>
+      <div class="metric-sub">pedidos</div>
+    </div>
+    <div class="metric">
+      <div class="metric-label">Maior canal</div>
+      <div class="metric-value">Vídeo</div>
+      <div class="metric-sub">~74% do GMV</div>
+    </div>
+    <div class="metric">
+      <div class="metric-label">Top produto</div>
+      <div class="metric-value">Sérum Lifting</div>
+      <div class="metric-sub">R$ 14.312 · 127 un.</div>
+    </div>
+  </div>
+
+  <p class="section-title">produtos por GMV</p>
+  <div class="products" id="products-list"></div>
+</div>
+
+<script>
+const products = [
+  { name: "Sérum Redutor de Linhas Finas — Efeito Lifting Cinderela", gmv: 14312.06, units: 127, loja: 1185.04, live: 204.95, video: 13047.43, card: 843.86 },
+  { name: "Kit Pincel Grátis — Blush Stick 2 em 1, Iluminador, FPS, Rímel", gmv: 2630.69, units: 10, loja: 751.80, live: 0, video: 1844.36, card: 786.33 },
+  { name: "Kit Completo Pele Madura — Skincare e Maquiagem 12 Itens", gmv: 726.75, units: 1, loja: 726.75, live: 0, video: 726.75, card: 0 },
+  { name: "Kit Make Essencial — Blush Terracota, Iluminador Rosê, Pincel 8 em 1", gmv: 703.78, units: 4, loja: 191.09, live: 0, video: 0, card: 506.78 },
+  { name: "Máscara de Cílios — Rímel Volume Intenso, Novo Aplicador", gmv: 664.50, units: 8, loja: 256.99, live: 171.14, video: 321.19, card: 82.36 },
+  { name: "Kit Lifting e Firmeza para Olhos 3 em 1 — Sérum + Máscara Regenerativa", gmv: 631.66, units: 3, loja: 0, live: 0, video: 0, card: 416.03 },
+  { name: "Kit Rotina de Hidratação Facial 4 em 1 — Mousse + Tônico + Sérum + Creme", gmv: 455.77, units: 2, loja: 224.47, live: 0, video: 0, card: 455.77 },
+  { name: "Kit Rejuvenescimento — Sérum Lifting, Creme Antirrugas, Rejuvenescedor Noturno", gmv: 297.00, units: 1, loja: 0, live: 0, video: 0, card: 297.00 },
+  { name: "Creme Antirrugas Multicamadas — Ácido Hialurônico + Colágeno + Peptídeo Tensor", gmv: 110.87, units: 1, loja: 0, live: 0, video: 0, card: 0 },
+  { name: "Blush Bastão Multifuncional 4 em 1 — Terracota, Coral, Rosa Mauve, Marrom", gmv: 87.00, units: 1, loja: 0, live: 0, video: 0, card: 0 },
+  { name: "Hidratante Facial FPS 50 em Bastão Stick — Pele 40+", gmv: 82.30, units: 1, loja: 0, live: 0, video: 0, card: 82.30 },
+  { name: "Pincel 9 em 1 Multifuncional", gmv: 82.21, units: 1, loja: 0, live: 0, video: 0, card: 82.21 },
+];
+
+const fmt = (v) => v > 0 ? 'R$ ' + v.toLocaleString('pt-BR', { minimumFractionDigits: 0, maximumFractionDigits: 0 }) : '—';
+const pct = (v, total) => total > 0 ? Math.round(v / total * 100) + '%' : '0%';
+
+const list = document.getElementById('products-list');
+products.forEach(p => {
+  const total = p.gmv;
+  const card = document.createElement('div');
+  card.className = 'product-card';
+
+  const channels = [
+    { label: 'Vídeo', val: p.video, cls: 'c-video' },
+    { label: 'Aba Loja', val: p.loja, cls: 'c-loja' },
+    { label: 'LIVE', val: p.live, cls: 'c-live' },
+    { label: 'Cartão', val: p.card, cls: 'c-card' },
+  ];
+
+  card.innerHTML = `
+    <div class="product-header">
+      <div class="product-name">${p.name}</div>
+      <div>
+        <div class="product-gmv">${fmt(p.gmv)}</div>
+        <div class="product-units">${p.units} un.</div>
+      </div>
+    </div>
+    <div class="channels">
+      ${channels.map(ch => `
+        <div class="channel">
+          <div class="channel-label">${ch.label}</div>
+          <div class="channel-val ${ch.val === 0 ? 'no-val' : ''}">${fmt(ch.val)}</div>
+          ${ch.val > 0 ? `<div class="bar-wrap"><div class="bar ${ch.cls}" style="width:${pct(ch.val, total)}"></div></div>` : ''}
+        </div>
+      `).join('')}
+    </div>
+  `;
+  list.appendChild(card);
+});
+</script>
